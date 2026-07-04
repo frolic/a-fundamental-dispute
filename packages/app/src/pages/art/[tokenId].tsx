@@ -1,35 +1,13 @@
-import { ethers } from "ethers";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { gql } from "urql";
 
-import {
-  TokenPageQuery,
-  TokenPageQueryVariables,
-} from "../../../codegen/indexer";
 import { ArtPreview } from "../../ArtPreview";
 import { maxSupply } from "../../constants";
-import { contracts, tokenContract } from "../../contracts";
-import { targetChainId } from "../../EthereumProviders";
+import { contracts } from "../../contracts";
+import { publicClient } from "../../publicClient";
 import { TextLink } from "../../TextLink";
 import { TokenOwner } from "../../TokenOwner";
 import { TopBar } from "../../TopBar";
-import { graphClient } from "../_app";
-
-// TODO: generate static paths
-
-const tokenPageQuery = gql`
-  query TokenPage($id: BigInt!) {
-    token: aFundamentalDisputeToken(id: $id) {
-      id
-      tokenId
-      seed
-      owner {
-        id
-      }
-    }
-  }
-`;
 
 type Props = {
   tokenId: number;
@@ -44,24 +22,22 @@ export const getServerSideProps: GetServerSideProps<
   const id = context.params?.tokenId;
   if (!id || !/^\d+$/.test(id)) return { notFound: true };
 
-  const res = await graphClient
-    .query<TokenPageQuery, TokenPageQueryVariables>(tokenPageQuery, { id })
-    .toPromise();
-
-  if (res.data?.token) {
-    return {
-      props: {
-        tokenId: res.data.token.tokenId,
-        seed: res.data.token.seed,
-        owner: res.data.token.owner?.id,
-      },
-    };
-  }
-
   const tokenId = parseInt(id);
-  const owner = await tokenContract.ownerOf(tokenId);
-  if (owner !== ethers.constants.AddressZero) {
-    const seed = await tokenContract.tokenSeed(tokenId);
+  if (tokenId < 1 || tokenId > maxSupply) return { notFound: true };
+
+  try {
+    const [owner, seed] = await Promise.all([
+      publicClient.readContract({
+        ...contracts.AFundamentalDispute,
+        functionName: "ownerOf",
+        args: [BigInt(tokenId)],
+      }),
+      publicClient.readContract({
+        ...contracts.AFundamentalDispute,
+        functionName: "tokenSeed",
+        args: [BigInt(tokenId)],
+      }),
+    ]);
     return {
       props: {
         tokenId,
@@ -69,13 +45,14 @@ export const getServerSideProps: GetServerSideProps<
         owner,
       },
     };
+  } catch (error) {
+    console.error("Error looking up token", tokenId, error);
+    return {
+      props: {
+        tokenId,
+      },
+    };
   }
-
-  return {
-    props: {
-      tokenId,
-    },
-  };
 };
 
 const ArtPage: NextPage<Props> = ({ tokenId, seed, owner }) => (

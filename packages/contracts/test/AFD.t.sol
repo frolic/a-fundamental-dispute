@@ -91,10 +91,10 @@ contract AFDTest is Test {
     function testSetUp() public {
         assertEq(token.balanceOf(artist), 21);
         assertEq(token.balanceOf(developer), 21);
-        assertEq(token.tokenSeed(1), 7510132);
-        assertEq(token.tokenSeed(2), 3534495);
-        assertEq(token.tokenSeed(22), 16225373);
-        assertEq(token.tokenSeed(23), 4150326);
+        assertEq(token.tokenSeed(1), 7194078);
+        assertEq(token.tokenSeed(2), 16248057);
+        assertEq(token.tokenSeed(22), 1273365);
+        assertEq(token.tokenSeed(23), 1374321);
     }
 
     function testMint() public {
@@ -275,7 +275,11 @@ contract AFDTest is Test {
 
         assertEq(
             token.tokenURI(1),
-            "data:application/json,%7B%22name%22%3A%22A%20Fundamental%20Dispute%201%2F436%22%2C%22description%22%3A%22%E2%80%94%20a%20series%20of%20digital%20sunsets%20living%20inside%20the%20world%20computer.%5Cn%5Cn%20%20Art%20by%20%40generativelight%2C%20website%20and%20contracts%20by%20%40frolic%22%2C%22external_url%22%3A%22https%3A%2F%2Fafundamentaldispute.com%2Fart%2F1%22%2C%22image%22%3A%22https%3A%2F%2Fafundamentaldispute.com%2Fapi%2Fart-placeholder%2F1%3F1181617360012278582241650299109413453698822432909%22%2C%22animation_url%22%3A%22data%3Atext%2Fhtml%2C%250A%2520%2520%253Cmeta%2520charset%253D%2522UTF-8%2522%253E%250A%2520%2520%253Cmeta%2520name%253D%2522viewport%2522%2520content%253D%2522width%253Ddevice-width%252C%2520initial-scale%253D1.0%2522%253E%250A%2520%2520%253Ctitle%253E1%252F436%2520%25E2%2580%2594%2520A%2520Fundamental%2520Dispute%253C%252Ftitle%253E%250A%250A%2520%2520%253Cstyle%253E%250A%2520%2520%2520%2520*%2520%257B%250A%2520%2520%2520%2520%2520%2520box-sizing%253A%2520border-box%253B%250A%2520%2520%2520%2520%257D%250A%2520%2520%2520%2520html%252C%250A%2520%2520%2520%2520body%2520%257B%250A%2520%2520%2520%2520%2520%2520width%253A%2520100vw%253B%250A%2520%2520%2520%2520%2520%2520height%253A%2520100vh%253B%250A%2520%2520%2520%2520%2520%2520margin%253A%25200%253B%250A%2520%2520%2520%2520%2520%2520background%253A%2520%2523111%253B%250A%2520%2520%2520%2520%257D%250A%2520%2520%2520%2520canvas%2520%257B%250A%2520%2520%2520%2520%2520%2520display%253A%2520block%253B%250A%2520%2520%2520%2520%2520%2520margin%253A%2520auto%253B%250A%2520%2520%2520%2520%257D%250A%2520%2520%2520%2520body.fullscreen%2520canvas%2520%257B%250A%2520%2520%2520%2520%2520%2520width%253A%25201200px%2520!important%253B%250A%2520%2520%2520%2520%2520%2520height%253A%25201650px%2520!important%253B%250A%2520%2520%2520%2520%257D%250A%2520%2520%2520%2520body%253Anot(.fullscreen)%2520%257B%250A%2520%2520%2520%2520%2520%2520overflow%253A%2520hidden%253B%250A%2520%2520%2520%2520%257D%250A%2520%2520%2520%2520body%253Anot(.fullscreen)%2520canvas%2520%257B%250A%2520%2520%2520%2520%2520%2520padding%253A%25208vmin%253B%250A%2520%2520%2520%2520%2520%2520width%253A%2520100%2525%2520!important%253B%250A%2520%2520%2520%2520%2520%2520height%253A%2520100%2525%2520!important%253B%250A%2520%2520%2520%2520%2520%2520object-fit%253A%2520contain%253B%250A%2520%2520%2520%2520%257D%250A%2520%2520%253C%252Fstyle%253E%250A%250A%2520%2520%253Cscript%253E%250A%2520%2520%2520%2520const%2520seed%2520%253D%25207510132%253B%250A%250A%2520%2520%2520%2520document.addEventListener(%2522click%2522%252C%2520(event)%2520%253D%253E%2520%257B%250A%2520%2520%2520%2520%2520%2520const%2520x%2520%253D%2520event.clientX%2520%252F%2520document.body.clientWidth%253B%250A%2520%2520%2520%2520%2520%2520const%2520y%2520%253D%2520event.clientY%2520%252F%2520document.body.clientHeight%253B%250A%2520%2520%2520%2520%2520%2520document.body.classList.toggle(%2522fullscreen%2522)%253B%250A%2520%2520%2520%2520%2520%2520document.body.scrollTo(%257B%250A%2520%2520%2520%2520%2520%2520%2520%2520left%253A%2520document.body.scrollWidth%2520*%2520x%2520-%2520document.body.clientWidth%2520%252F%25202%252C%250A%2520%2520%2520%2520%2520%2520%2520%2520top%253A%2520document.body.scrollHeight%2520*%2520y%2520-%2520document.body.clientHeight%2520%252F%25202%250A%2520%2520%2520%2520%2520%2520%257D)%253B%250A%2520%2520%2520%2520%257D)%253B%250A%2520%2520%253C%252Fscript%253E%250A%250A%2520%2520%253Cscript%2520type%253D%2522text%252Fjavascript%252Bgzip%2522%2520src%253D%2522data%253Atext%252Fjavascript%253Bbase64%252C/* pretend this is p5.js */%2522%253E%253C%252Fscript%253E%250A%2520%2520%253Cscript%2520type%253D%2522text%252Fjavascript%252Bgzip%2522%2520src%253D%2522data%253Atext%252Fjavascript%253Bbase64%252C/* pretend this is afd.js */%2522%253E%253C%252Fscript%253E%250A%2520%2520%253Cscript%2520src%253D%2522data%253Atext%252Fjavascript%253Bbase64%252C/* pretend this is gunzipScripts.js */%2522%253E%253C%252Fscript%253E%250A%22%7D"
+            string.concat(
+                "data:application/json,%7B%22name%22%3A%22A%20Fundamental%20Dispute%201%2F436%22%2C%22description%22%3A%22%E2%80%94%20a%20series%20of%20digital%20sunsets%20living%20inside%20the%20world%20computer.%5Cn%5Cn%20%20Art%20by%20%40generativelight%2C%20website%20and%20contracts%20by%20%40frolic%22%2C%22external_url%22%3A%22https%3A%2F%2Fafundamentaldispute.com%2Fart%2F1%22%2C%22image%22%3A%22https%3A%2F%2Fafundamentaldispute.com%2Fapi%2Fart-placeholder%2F1%3F",
+                vm.toString(uint256(uint160(address(renderer)))),
+                "%22%2C%22animation_url%22%3A%22data%3Atext%2Fhtml%2C%250A%2520%2520%253Cmeta%2520charset%253D%2522UTF-8%2522%253E%250A%2520%2520%253Cmeta%2520name%253D%2522viewport%2522%2520content%253D%2522width%253Ddevice-width%252C%2520initial-scale%253D1.0%2522%253E%250A%2520%2520%253Ctitle%253E1%252F436%2520%25E2%2580%2594%2520A%2520Fundamental%2520Dispute%253C%252Ftitle%253E%250A%250A%2520%2520%253Cstyle%253E%250A%2520%2520%2520%2520*%2520%257B%250A%2520%2520%2520%2520%2520%2520box-sizing%253A%2520border-box%253B%250A%2520%2520%2520%2520%257D%250A%2520%2520%2520%2520html%252C%250A%2520%2520%2520%2520body%2520%257B%250A%2520%2520%2520%2520%2520%2520width%253A%2520100vw%253B%250A%2520%2520%2520%2520%2520%2520height%253A%2520100vh%253B%250A%2520%2520%2520%2520%2520%2520margin%253A%25200%253B%250A%2520%2520%2520%2520%2520%2520background%253A%2520%2523111%253B%250A%2520%2520%2520%2520%257D%250A%2520%2520%2520%2520canvas%2520%257B%250A%2520%2520%2520%2520%2520%2520display%253A%2520block%253B%250A%2520%2520%2520%2520%2520%2520margin%253A%2520auto%253B%250A%2520%2520%2520%2520%257D%250A%2520%2520%2520%2520body.fullscreen%2520canvas%2520%257B%250A%2520%2520%2520%2520%2520%2520width%253A%25201200px%2520!important%253B%250A%2520%2520%2520%2520%2520%2520height%253A%25201650px%2520!important%253B%250A%2520%2520%2520%2520%257D%250A%2520%2520%2520%2520body%253Anot(.fullscreen)%2520%257B%250A%2520%2520%2520%2520%2520%2520overflow%253A%2520hidden%253B%250A%2520%2520%2520%2520%257D%250A%2520%2520%2520%2520body%253Anot(.fullscreen)%2520canvas%2520%257B%250A%2520%2520%2520%2520%2520%2520padding%253A%25208vmin%253B%250A%2520%2520%2520%2520%2520%2520width%253A%2520100%2525%2520!important%253B%250A%2520%2520%2520%2520%2520%2520height%253A%2520100%2525%2520!important%253B%250A%2520%2520%2520%2520%2520%2520object-fit%253A%2520contain%253B%250A%2520%2520%2520%2520%257D%250A%2520%2520%253C%252Fstyle%253E%250A%250A%2520%2520%253Cscript%253E%250A%2520%2520%2520%2520const%2520seed%2520%253D%25207194078%253B%250A%250A%2520%2520%2520%2520document.addEventListener(%2522click%2522%252C%2520(event)%2520%253D%253E%2520%257B%250A%2520%2520%2520%2520%2520%2520const%2520x%2520%253D%2520event.clientX%2520%252F%2520document.body.clientWidth%253B%250A%2520%2520%2520%2520%2520%2520const%2520y%2520%253D%2520event.clientY%2520%252F%2520document.body.clientHeight%253B%250A%2520%2520%2520%2520%2520%2520document.body.classList.toggle(%2522fullscreen%2522)%253B%250A%2520%2520%2520%2520%2520%2520document.body.scrollTo(%257B%250A%2520%2520%2520%2520%2520%2520%2520%2520left%253A%2520document.body.scrollWidth%2520*%2520x%2520-%2520document.body.clientWidth%2520%252F%25202%252C%250A%2520%2520%2520%2520%2520%2520%2520%2520top%253A%2520document.body.scrollHeight%2520*%2520y%2520-%2520document.body.clientHeight%2520%252F%25202%250A%2520%2520%2520%2520%2520%2520%257D)%253B%250A%2520%2520%2520%2520%257D)%253B%250A%2520%2520%253C%252Fscript%253E%250A%250A%2520%2520%253Cscript%2520type%253D%2522text%252Fjavascript%252Bgzip%2522%2520src%253D%2522data%253Atext%252Fjavascript%253Bbase64%252C/* pretend this is p5.js */%2522%253E%253C%252Fscript%253E%250A%2520%2520%253Cscript%2520type%253D%2522text%252Fjavascript%252Bgzip%2522%2520src%253D%2522data%253Atext%252Fjavascript%253Bbase64%252C/* pretend this is afd.js */%2522%253E%253C%252Fscript%253E%250A%2520%2520%253Cscript%2520src%253D%2522data%253Atext%252Fjavascript%253Bbase64%252C/* pretend this is gunzipScripts.js */%2522%253E%253C%252Fscript%253E%250A%22%7D"
+            )
         );
 
         MockRenderer renderer = new MockRenderer();
@@ -292,13 +296,13 @@ contract AFDTest is Test {
 
     function testStableSeed() public {
         assertEq(token.ownerOf(1), artist);
-        assertEq(token.tokenSeed(1), 7510132);
+        assertEq(token.tokenSeed(1), 7194078);
 
         vm.prank(artist);
         token.safeTransferFrom(artist, address(minter), 1);
 
         assertEq(token.ownerOf(1), minter);
-        assertEq(token.tokenSeed(1), 7510132);
+        assertEq(token.tokenSeed(1), 7194078);
     }
 
     function testWithdraw() public {
@@ -380,12 +384,12 @@ contract AFDTest is Test {
 
         token.mint{value: 0.12 ether}(createSignature(abi.encode(minter)));
         assertEq(token.ownerOf(43), minter);
-        assertEq(token.tokenSeed(43), 6342930);
+        assertEq(token.tokenSeed(43), 2092150);
 
         disputeSignature =
             createSignature(abi.encode(minter, 43, token.lastDispute()));
         token.dispute(43, disputeSignature);
-        assertEq(token.tokenSeed(43), 5638997);
+        assertEq(token.tokenSeed(43), 971264);
 
         for (uint256 i = 1; i <= 217; i++) {
             vm.roll(block.number + 2810);
@@ -409,25 +413,25 @@ contract AFDTest is Test {
 
         vm.roll(block.number + 2810);
 
-        assertEq(token.tokenSeed(1), 7510132);
-        assertEq(token.tokenSeed(2), 3534495);
-        assertEq(token.tokenSeed(3), 9475496);
-        assertEq(token.tokenSeed(4), 7207235);
-        assertEq(token.tokenSeed(5), 1374442);
-        assertEq(token.tokenSeed(22), 16225373);
-        assertEq(token.tokenSeed(23), 4150326);
+        assertEq(token.tokenSeed(1), 7194078);
+        assertEq(token.tokenSeed(2), 16248057);
+        assertEq(token.tokenSeed(3), 8234127);
+        assertEq(token.tokenSeed(4), 10812474);
+        assertEq(token.tokenSeed(5), 8004039);
+        assertEq(token.tokenSeed(22), 1273365);
+        assertEq(token.tokenSeed(23), 1374321);
 
         disputeSignature =
             createSignature(abi.encode(artist, 2, token.lastDispute()));
         vm.prank(artist);
         token.dispute(2, disputeSignature);
-        assertEq(token.tokenSeed(1), 7510132);
-        assertEq(token.tokenSeed(2), 14434514);
-        assertEq(token.tokenSeed(3), 9475496);
-        assertEq(token.tokenSeed(4), 7207235);
-        assertEq(token.tokenSeed(5), 1374442);
-        assertEq(token.tokenSeed(22), 16225373);
-        assertEq(token.tokenSeed(23), 4150326);
+        assertEq(token.tokenSeed(1), 7194078);
+        assertEq(token.tokenSeed(2), 14781286);
+        assertEq(token.tokenSeed(3), 8234127);
+        assertEq(token.tokenSeed(4), 10812474);
+        assertEq(token.tokenSeed(5), 8004039);
+        assertEq(token.tokenSeed(22), 1273365);
+        assertEq(token.tokenSeed(23), 1374321);
 
         disputeSignature =
             createSignature(abi.encode(artist, 3, token.lastDispute()));
@@ -439,21 +443,21 @@ contract AFDTest is Test {
 
         vm.prank(artist);
         token.dispute(3, disputeSignature);
-        assertEq(token.tokenSeed(1), 7510132);
-        assertEq(token.tokenSeed(2), 14434514);
-        assertEq(token.tokenSeed(3), 3094754);
-        assertEq(token.tokenSeed(4), 7207235);
-        assertEq(token.tokenSeed(5), 1374442);
-        assertEq(token.tokenSeed(22), 16225373);
-        assertEq(token.tokenSeed(23), 4150326);
+        assertEq(token.tokenSeed(1), 7194078);
+        assertEq(token.tokenSeed(2), 14781286);
+        assertEq(token.tokenSeed(3), 8725280);
+        assertEq(token.tokenSeed(4), 10812474);
+        assertEq(token.tokenSeed(5), 8004039);
+        assertEq(token.tokenSeed(22), 1273365);
+        assertEq(token.tokenSeed(23), 1374321);
 
         token.normalizeOwnership(1, 24);
-        assertEq(token.tokenSeed(1), 7510132);
-        assertEq(token.tokenSeed(2), 14434514);
-        assertEq(token.tokenSeed(3), 3094754);
-        assertEq(token.tokenSeed(4), 7207235);
-        assertEq(token.tokenSeed(5), 1374442);
-        assertEq(token.tokenSeed(22), 16225373);
-        assertEq(token.tokenSeed(23), 4150326);
+        assertEq(token.tokenSeed(1), 7194078);
+        assertEq(token.tokenSeed(2), 14781286);
+        assertEq(token.tokenSeed(3), 8725280);
+        assertEq(token.tokenSeed(4), 10812474);
+        assertEq(token.tokenSeed(5), 8004039);
+        assertEq(token.tokenSeed(22), 1273365);
+        assertEq(token.tokenSeed(23), 1374321);
     }
 }

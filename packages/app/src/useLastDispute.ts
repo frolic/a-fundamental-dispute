@@ -6,7 +6,7 @@ import { useIsMounted } from "./useIsMounted";
 
 export const useLastDispute = () => {
   const isMounted = useIsMounted();
-  const { data: currentBlock } = useBlockNumber({
+  const { data: blockNumber } = useBlockNumber({
     watch: true,
     enabled: isMounted,
   });
@@ -23,8 +23,10 @@ export const useLastDispute = () => {
     enabled: isMounted,
   });
 
-  const lastDisputeBlock = lastDispute?.toNumber();
-  const disputesLeft = disputes?.toNumber();
+  const currentBlock = blockNumber != null ? Number(blockNumber) : undefined;
+  const lastDisputeBlock =
+    lastDispute != null ? Number(lastDispute) : undefined;
+  const disputesLeft = disputes != null ? Number(disputes) : undefined;
   const canDispute =
     currentBlock &&
     lastDisputeBlock &&

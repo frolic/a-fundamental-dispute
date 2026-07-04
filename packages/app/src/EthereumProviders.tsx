@@ -5,8 +5,9 @@ import {
   getDefaultWallets,
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import * as allChains from "wagmi/chains";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
 
 // Will default to mainnet if nothing set in the ENV
@@ -25,24 +26,38 @@ export const targetChain = (() => {
 // the user to switch network if they're on an alternative one
 const targetChains = [targetChain, allChains.mainnet];
 
-export const { chains, provider, webSocketProvider } = configureChains(
+const alchemyApiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+
+const { chains, publicClient, webSocketPublicClient } = configureChains(
   targetChains,
   [
-    // alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY! }),
+    // wagmi's alchemyProvider points at the retired alchemyapi.io domain, so
+    // configure Alchemy's current domain by hand
+    jsonRpcProvider({
+      rpc: (chain) =>
+        alchemyApiKey && chain.id === allChains.mainnet.id
+          ? { http: `https://eth-mainnet.g.alchemy.com/v2/${alchemyApiKey}` }
+          : null,
+    }),
     publicProvider(),
   ]
 );
 
 const { connectors } = getDefaultWallets({
   appName: "A Fundamental Dispute",
+  // WalletConnect-based wallets need a real project ID from
+  // https://cloud.walletconnect.com — browser wallets work without one
+  projectId:
+    process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ??
+    "00000000000000000000000000000000",
   chains,
 });
 
-export const wagmiClient = createClient({
+export const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
-  provider,
-  webSocketProvider,
+  publicClient,
+  webSocketPublicClient,
 });
 
 type Props = {
@@ -50,7 +65,7 @@ type Props = {
 };
 
 export const EthereumProviders = ({ children }: Props) => (
-  <WagmiConfig client={wagmiClient}>
+  <WagmiConfig config={wagmiConfig}>
     <RainbowKitProvider chains={chains} theme={darkTheme()}>
       {children}
     </RainbowKitProvider>

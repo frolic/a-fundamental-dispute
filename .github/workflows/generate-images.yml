@@ -1,0 +1,41 @@
+---
+name: generate-images
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    # daily; disputes are rate-limited to ~1 per 7.3h and the run only
+    # renders images missing from the bucket, so this is usually a no-op
+    - cron: "17 6 * * *"
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Cache puppeteer browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/puppeteer
+          key: puppeteer-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm install
+      - run: pnpm generate:ci
+        working-directory: ./packages/previews
+        env:
+          DIGITALOCEAN_SPACES_KEY: ${{ secrets.DIGITALOCEAN_SPACES_KEY }}
+          DIGITALOCEAN_SPACES_SECRET: ${{ secrets.DIGITALOCEAN_SPACES_SECRET }}
+          RPC_HTTP_URL_1: ${{ secrets.RPC_HTTP_URL_1 }}

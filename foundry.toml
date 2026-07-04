@@ -23,6 +23,14 @@ fs_permissions = [
 # Enable YUL compiler to avoid stack too deep errors
 # Much slower but it works
 via_ir = true
+# Foundry 1.0 changed the optimizer default to false, but via_ir needs it to
+# avoid stack too deep — this matches the pre-1.0 default the project built with
+optimizer = true
+optimizer_runs = 200
+# The contracts were built and deployed in the Paris era; newer default EVM
+# versions change block.difficulty/prevrandao semantics that token seeds
+# (and the seed values asserted in tests) depend on
+evm_version = 'paris'
 
 [fmt]
 line_length = 80

@@ -1,20 +1,9 @@
-import { useEffect } from "react";
-import { gql } from "urql";
+import { useContractRead } from "wagmi";
 
-import { useTokenOwnerQuery } from "../codegen/indexer";
+import { contracts } from "./contracts";
 import { TextLink } from "./TextLink";
 import { useENS } from "./useENS";
 import { useIsMounted } from "./useIsMounted";
-
-gql`
-  query TokenOwner($id: BigInt!) {
-    token: aFundamentalDisputeToken(id: $id) {
-      owner {
-        id
-      }
-    }
-  }
-`;
 
 type Props = {
   tokenId: number;
@@ -24,22 +13,15 @@ type Props = {
 export const TokenOwner = ({ tokenId, owner }: Props) => {
   const isMounted = useIsMounted();
 
-  const [{ data, error, fetching }, executeQuery] = useTokenOwnerQuery({
-    variables: { id: tokenId.toString() },
-    pause: !!owner || !isMounted,
+  const ownerRead = useContractRead({
+    ...contracts.AFundamentalDispute,
+    functionName: "ownerOf",
+    args: [BigInt(tokenId)],
+    enabled: isMounted && !owner,
   });
 
-  useEffect(() => {
-    if (data?.token || error || fetching || owner) return;
-    const timer = setInterval(() => {
-      console.log("checking for token");
-      executeQuery({ requestPolicy: "cache-and-network" });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [data?.token, error, executeQuery, fetching, owner]);
-
   const { address, displayName } = useENS(
-    isMounted ? owner ?? data?.token?.owner?.id : undefined
+    isMounted ? owner ?? ownerRead.data : undefined
   );
   if (!address) {
     return (
