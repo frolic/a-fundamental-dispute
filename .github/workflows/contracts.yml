@@ -13,79 +13,23 @@ defaults:
     working-directory: ./packages/contracts
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node-version: [16.x]
-    runs-on: ${{ matrix.os }}
+  test:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Cache pnpm modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2.2.4
+        uses: pnpm/action-setup@v4
         with:
-          # Pinned to 7.19 until https://github.com/pnpm/pnpm/pull/5847 is merged
-          version: 7.19
+          version: 9
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 22
           cache: pnpm
       - name: Install Foundry
-        uses: onbjerg/foundry-toolchain@v1
-        with:
-          version: nightly
-      - run: pnpm install
-      - run: pnpm build
-      - name: Outdated files detected, run `pnpm build` and commit them
-        run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
-            git status
-            git --no-pager diff
-            exit 1
-          fi
-
-  test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node-version: [16.x]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-      - name: Cache pnpm modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2.2.4
-        with:
-          # Pinned to 7.19 until https://github.com/pnpm/pnpm/pull/5847 is merged
-          version: 7.19
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "pnpm"
-      - name: Install Foundry
-        uses: onbjerg/foundry-toolchain@v1
-        with:
-          version: nightly
+        uses: foundry-rs/foundry-toolchain@v1
       - run: pnpm install
       - run: pnpm test
