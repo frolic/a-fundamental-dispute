@@ -2,7 +2,7 @@
   "name": "@web3-scaffold/contracts",
   "private": true,
   "engines": {
-    "node": "18"
+    "node": "22.x"
   },
   "scripts": {
     "test": "forge test --gas-report",

@@ -2,7 +2,7 @@
   "name": "web3-scaffold",
   "private": true,
   "engines": {
-    "node": "18",
+    "node": "22.x",
     "pnpm": "8 || 9"
   },
   "scripts": {
