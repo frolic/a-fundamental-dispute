@@ -1,11 +1,16 @@
-import { ethers } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { encodeAbiParameters, Hex, isAddress } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const signer = new ethers.Wallet(process.env.SHARED_SIGNER_PRIVATE_KEY!);
+  const sharedSignerPrivateKey = process.env.SHARED_SIGNER_PRIVATE_KEY;
+  if (!sharedSignerPrivateKey) {
+    return res.status(500).send({ error: "signer not configured" });
+  }
+  const signer = privateKeyToAccount(sharedSignerPrivateKey as Hex);
 
   const address = req.body.address as string;
-  if (!address) {
+  if (!address || !isAddress(address)) {
     return res.status(400).send({ error: "missing address" });
   }
 
@@ -19,48 +24,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).send({ error: "missing lastDispute" });
   }
 
-  // const turnstileToken = req.body.turnstileToken as string;
-  // if (!turnstileToken) {
-  //   return res.status(400).send({ error: "missing turnstileToken" });
-  // }
-
-  // const verifyResult = await fetch(
-  //   "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-  //   {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       secret: process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY!,
-  //       response: turnstileToken,
-  //     }),
-  //   }
-  // ).then((res) => res.json());
-
-  // if (!verifyResult.success) {
-  //   return res.status(400).send({
-  //     error:
-  //       verifyResult["error-codes"].join(", ") ||
-  //       "could not verify turnstile token",
-  //   });
-  // }
-
-  // if (address !== verifyResult.cdata) {
-  //   return res.status(400).send({
-  //     error: "cdata address does not match",
-  //   });
-  // }
-
-  const encoded = ethers.utils.arrayify(
-    ethers.utils.defaultAbiCoder.encode(
-      ["address", "uint256", "uint256"],
-      [address, tokenId, lastDispute]
-    )
+  const encoded = encodeAbiParameters(
+    [{ type: "address" }, { type: "uint256" }, { type: "uint256" }],
+    [address, BigInt(tokenId), BigInt(lastDispute)]
   );
 
   return res.send({
-    signature: await signer.signMessage(encoded),
+    signature: await signer.signMessage({ message: { raw: encoded } }),
   });
 };
 

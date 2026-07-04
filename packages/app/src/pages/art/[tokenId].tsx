@@ -3,7 +3,8 @@ import Head from "next/head";
 
 import { ArtPreview } from "../../ArtPreview";
 import { maxSupply } from "../../constants";
-import { contracts, tokenContract } from "../../contracts";
+import { contracts } from "../../contracts";
+import { publicClient } from "../../publicClient";
 import { TextLink } from "../../TextLink";
 import { TokenOwner } from "../../TokenOwner";
 import { TopBar } from "../../TopBar";
@@ -26,8 +27,16 @@ export const getServerSideProps: GetServerSideProps<
 
   try {
     const [owner, seed] = await Promise.all([
-      tokenContract.ownerOf(tokenId),
-      tokenContract.tokenSeed(tokenId),
+      publicClient.readContract({
+        ...contracts.AFundamentalDispute,
+        functionName: "ownerOf",
+        args: [BigInt(tokenId)],
+      }),
+      publicClient.readContract({
+        ...contracts.AFundamentalDispute,
+        functionName: "tokenSeed",
+        args: [BigInt(tokenId)],
+      }),
     ]);
     return {
       props: {

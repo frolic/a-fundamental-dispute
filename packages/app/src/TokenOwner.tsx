@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { useContractRead } from "wagmi";
 
 import { contracts } from "./contracts";
@@ -17,7 +16,7 @@ export const TokenOwner = ({ tokenId, owner }: Props) => {
   const ownerRead = useContractRead({
     ...contracts.AFundamentalDispute,
     functionName: "ownerOf",
-    args: [BigNumber.from(tokenId)],
+    args: [BigInt(tokenId)],
     enabled: isMounted && !owner,
   });
 

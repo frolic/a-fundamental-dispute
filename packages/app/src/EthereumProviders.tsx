@@ -5,7 +5,7 @@ import {
   getDefaultWallets,
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import * as allChains from "wagmi/chains";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
@@ -28,7 +28,7 @@ const targetChains = [targetChain, allChains.mainnet];
 
 const alchemyApiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
 
-export const { chains, provider, webSocketProvider } = configureChains(
+const { chains, publicClient, webSocketPublicClient } = configureChains(
   targetChains,
   [
     // wagmi's alchemyProvider points at the retired alchemyapi.io domain, so
@@ -45,14 +45,19 @@ export const { chains, provider, webSocketProvider } = configureChains(
 
 const { connectors } = getDefaultWallets({
   appName: "A Fundamental Dispute",
+  // WalletConnect-based wallets need a real project ID from
+  // https://cloud.walletconnect.com — browser wallets work without one
+  projectId:
+    process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ??
+    "00000000000000000000000000000000",
   chains,
 });
 
-export const wagmiClient = createClient({
+export const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
-  provider,
-  webSocketProvider,
+  publicClient,
+  webSocketPublicClient,
 });
 
 type Props = {
@@ -60,7 +65,7 @@ type Props = {
 };
 
 export const EthereumProviders = ({ children }: Props) => (
-  <WagmiConfig client={wagmiClient}>
+  <WagmiConfig config={wagmiConfig}>
     <RainbowKitProvider chains={chains} theme={darkTheme()}>
       {children}
     </RainbowKitProvider>

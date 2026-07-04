@@ -3,8 +3,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import path from "path";
 
 import { maxSupply } from "../../../constants";
-import { tokenContract } from "../../../contracts";
+import { contracts } from "../../../contracts";
 import { previewImageUrl } from "../../../imageUrls";
+import { publicClient } from "../../../publicClient";
 
 const bg = fs.readFileSync(
   path.join(process.cwd(), "public/art-placeholder-bg.jpg")
@@ -18,7 +19,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const seed = await tokenContract.tokenSeed(tokenId);
+    const seed = await publicClient.readContract({
+      ...contracts.AFundamentalDispute,
+      functionName: "tokenSeed",
+      args: [BigInt(tokenId)],
+    });
     const imageUrl = previewImageUrl(tokenId, seed);
     const imageResponse = await fetch(imageUrl, { method: "HEAD" });
     if (imageResponse.status === 200) {

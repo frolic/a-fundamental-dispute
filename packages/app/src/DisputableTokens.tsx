@@ -1,7 +1,11 @@
-import { BigNumber } from "ethers";
 import Link from "next/link";
 import { toast } from "react-toastify";
-import { useAccount, useContractRead, useContractWrite } from "wagmi";
+import {
+  useAccount,
+  useContractRead,
+  useContractWrite,
+  usePublicClient,
+} from "wagmi";
 
 import { maxSupply } from "./constants";
 import { contracts } from "./contracts";
@@ -13,6 +17,7 @@ type Props = {
 
 export const DisputableTokens = ({ lastDispute }: Props) => {
   const { address } = useAccount();
+  const publicClient = usePublicClient();
 
   const tokensOfOwner = useContractRead({
     ...contracts.AFundamentalDispute,
@@ -22,7 +27,6 @@ export const DisputableTokens = ({ lastDispute }: Props) => {
   });
 
   const { writeAsync } = useContractWrite({
-    mode: "recklesslyUnprepared",
     ...contracts.AFundamentalDispute,
     functionName: "dispute",
   });
@@ -35,7 +39,7 @@ export const DisputableTokens = ({ lastDispute }: Props) => {
     return <PendingIcon />;
   }
 
-  const tokenIds = tokensOfOwner.data.map((tokenId) => tokenId.toNumber());
+  const tokenIds = tokensOfOwner.data.map((tokenId) => Number(tokenId));
   if (!tokenIds.length) {
     return <p>There is nothing to dispute…</p>;
   }
@@ -75,15 +79,12 @@ export const DisputableTokens = ({ lastDispute }: Props) => {
                 );
                 toast.update(toastId, { render: "Disputing…" });
 
-                const tx = await writeAsync({
-                  recklesslySetUnpreparedArgs: [
-                    BigNumber.from(tokenId),
-                    signature,
-                  ],
+                const { hash } = await writeAsync({
+                  args: [BigInt(tokenId), signature],
                 });
                 toast.update(toastId, { render: "Awaiting reply…" });
 
-                const receipt = await tx.wait();
+                await publicClient.waitForTransactionReceipt({ hash });
                 toast.update(toastId, {
                   isLoading: false,
                   type: "success",

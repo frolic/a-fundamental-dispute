@@ -1,5 +1,4 @@
 import classNames from "classnames";
-import { BigNumber } from "ethers";
 import {
   DetailedHTMLProps,
   IframeHTMLAttributes,
@@ -23,7 +22,7 @@ const ArtIframe = ({
   const html = useContractRead({
     ...contracts.AFDRenderer,
     functionName: "fullscreenHtml",
-    args: [BigNumber.from(tokenId)],
+    args: [BigInt(tokenId)],
     enabled: !hidden,
   });
 
