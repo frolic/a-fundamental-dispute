@@ -10,7 +10,7 @@ import {
 import { useContractRead } from "wagmi";
 
 import { contracts } from "./contracts";
-import { previewImageUrl } from "./previewImageUrl";
+import { previewImageUrl } from "./imageUrls";
 
 const ArtIframe = ({
   tokenId,

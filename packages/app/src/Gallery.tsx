@@ -1,17 +1,8 @@
-import { gql } from "urql";
-
 import { ArtPreview } from "./ArtPreview";
 import { maxSupply } from "./constants";
 import { PendingIcon } from "./icons/PendingIcon";
 
-gql`
-  fragment Gallery on AFundamentalDisputeToken {
-    tokenId
-    seed
-  }
-`;
-
-type Token = { tokenId: number; seed: number };
+export type Token = { tokenId: number; seed: number };
 
 type Props = {
   tokens: Token[];

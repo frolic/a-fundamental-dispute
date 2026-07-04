@@ -1,41 +1,21 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { gql } from "urql";
 
-import {
-  GalleryFragment,
-  GalleryFragmentDoc,
-  GalleryPageQuery,
-  GalleryPageQueryVariables,
-} from "../../codegen/indexer";
-import { Gallery } from "../Gallery";
+import { Gallery, Token } from "../Gallery";
+import { tokensManifestUrl } from "../imageUrls";
 import { TopBar } from "../TopBar";
-import { graphClient } from "./_app";
-
-const galleryPageQuery = gql`
-  query GalleryPage {
-    tokens: aFundamentalDisputeTokens(orderBy: "tokenId", first: 1000) {
-      ...Gallery
-    }
-  }
-  ${GalleryFragmentDoc}
-`;
 
 type Props = {
-  tokens: GalleryFragment[];
+  tokens: Token[];
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const res = await graphClient
-    .query<GalleryPageQuery, GalleryPageQueryVariables>(galleryPageQuery)
-    .toPromise();
+  const tokens: Token[] = await fetch(tokensManifestUrl).then((res) =>
+    res.json()
+  );
   return {
     props: {
-      tokens:
-        res.data?.tokens.map((token) => ({
-          tokenId: token.tokenId,
-          seed: token.seed,
-        })) ?? [],
+      tokens,
     },
   };
 };

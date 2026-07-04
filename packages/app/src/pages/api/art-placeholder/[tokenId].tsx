@@ -1,28 +1,14 @@
 import fs from "fs";
 import type { NextApiRequest, NextApiResponse } from "next";
 import path from "path";
-import { gql } from "urql";
 
-import {
-  ArtPlaceholderQuery,
-  ArtPlaceholderQueryVariables,
-} from "../../../../codegen/indexer";
 import { maxSupply } from "../../../constants";
-import { previewImageUrl } from "../../../previewImageUrl";
-import { graphClient } from "../../_app";
+import { tokenContract } from "../../../contracts";
+import { previewImageUrl } from "../../../imageUrls";
 
 const bg = fs.readFileSync(
   path.join(process.cwd(), "public/art-placeholder-bg.jpg")
 );
-
-const artPlaceholderQuery = gql`
-  query ArtPlaceholder($id: BigInt!) {
-    token: aFundamentalDisputeToken(id: $id) {
-      tokenId
-      seed
-    }
-  }
-`;
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const tokenId = parseInt(req.query.tokenId as string);
@@ -31,20 +17,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const result = await graphClient
-    .query<ArtPlaceholderQuery, ArtPlaceholderQueryVariables>(
-      artPlaceholderQuery,
-      { id: tokenId.toString() }
-    )
-    .toPromise();
-
-  const token = result.data?.token;
-  if (token) {
-    const imageUrl = previewImageUrl(token.tokenId, token.seed);
+  try {
+    const seed = await tokenContract.tokenSeed(tokenId);
+    const imageUrl = previewImageUrl(tokenId, seed);
     const imageResponse = await fetch(imageUrl, { method: "HEAD" });
     if (imageResponse.status === 200) {
       return res.redirect(302, imageUrl);
     }
+  } catch (error) {
+    console.error("Error looking up token seed", error);
   }
 
   console.log("Showing placeholder for token ID", tokenId);

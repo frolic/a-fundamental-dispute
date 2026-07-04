@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 import Head from "next/head";
 
 import { OpenSeaIcon } from "../icons/OpenSeaIcon";
-import { MintSection } from "../MintSection";
 import { TextLink } from "../TextLink";
 
 const HomePage: NextPage = () => {
@@ -94,8 +93,6 @@ const HomePage: NextPage = () => {
           </p>
 
           <hr className="border-1 border-stone-800" />
-
-          {/* <MintSection /> */}
 
           <div className="flex justify-between gap-8">
             <div>

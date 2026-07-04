@@ -63,12 +63,7 @@ const DisputePage: NextPage = () => {
               }
               return <p>Now is not the time…</p>;
             }
-            return (
-              <DisputableTokens
-                address={account.address}
-                lastDispute={lastDisputeBlock}
-              />
-            );
+            return <DisputableTokens lastDispute={lastDisputeBlock} />;
           }}
         </ConnectButton.Custom>
       </div>

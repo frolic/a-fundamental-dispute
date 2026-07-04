@@ -7,6 +7,7 @@ import {
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import * as allChains from "wagmi/chains";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
 
 // Will default to mainnet if nothing set in the ENV
@@ -25,10 +26,19 @@ export const targetChain = (() => {
 // the user to switch network if they're on an alternative one
 const targetChains = [targetChain, allChains.mainnet];
 
+const alchemyApiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+
 export const { chains, provider, webSocketProvider } = configureChains(
   targetChains,
   [
-    // alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY! }),
+    // wagmi's alchemyProvider points at the retired alchemyapi.io domain, so
+    // configure Alchemy's current domain by hand
+    jsonRpcProvider({
+      rpc: (chain) =>
+        alchemyApiKey && chain.id === allChains.mainnet.id
+          ? { http: `https://eth-mainnet.g.alchemy.com/v2/${alchemyApiKey}` }
+          : null,
+    }),
     publicProvider(),
   ]
 );

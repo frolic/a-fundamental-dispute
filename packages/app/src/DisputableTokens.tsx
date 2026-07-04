@@ -1,36 +1,24 @@
 import { BigNumber } from "ethers";
 import Link from "next/link";
 import { toast } from "react-toastify";
-import { gql } from "urql";
-import { useContractWrite } from "wagmi";
+import { useAccount, useContractRead, useContractWrite } from "wagmi";
 
-import { useDisputableTokensQuery } from "../codegen/indexer";
 import { maxSupply } from "./constants";
 import { contracts } from "./contracts";
 import { PendingIcon } from "./icons/PendingIcon";
 
-gql`
-  query DisputableTokens($owner: String!) {
-    tokens: aFundamentalDisputeTokens(
-      where: { owner: $owner }
-      orderBy: "tokenId"
-      first: 1000
-    ) {
-      id
-      tokenId
-    }
-  }
-`;
-
 type Props = {
-  address: string;
   lastDispute: number;
 };
 
-export const DisputableTokens = ({ address, lastDispute }: Props) => {
-  const [result] = useDisputableTokensQuery({
-    variables: { owner: address as string },
-    pause: !address,
+export const DisputableTokens = ({ lastDispute }: Props) => {
+  const { address } = useAccount();
+
+  const tokensOfOwner = useContractRead({
+    ...contracts.AFundamentalDispute,
+    functionName: "tokensOfOwner",
+    args: address && [address],
+    enabled: !!address,
   });
 
   const { writeAsync } = useContractWrite({
@@ -39,25 +27,25 @@ export const DisputableTokens = ({ address, lastDispute }: Props) => {
     functionName: "dispute",
   });
 
-  if (result.error) {
-    return <p>Error: {result.error.message}</p>;
+  if (tokensOfOwner.error) {
+    return <p>Error: {tokensOfOwner.error.message}</p>;
   }
 
-  if (!result.data) {
+  if (!tokensOfOwner.data) {
     return <PendingIcon />;
   }
 
-  const tokens = result.data.tokens;
-  if (!tokens.length) {
+  const tokenIds = tokensOfOwner.data.map((tokenId) => tokenId.toNumber());
+  if (!tokenIds.length) {
     return <p>There is nothing to dispute…</p>;
   }
 
   return (
     <div className="flex flex-wrap gap-12">
-      {tokens.map((token) => (
-        <div key={token.id} className="grid relative">
+      {tokenIds.map((tokenId) => (
+        <div key={tokenId} className="grid relative">
           <img
-            src={`/api/art-placeholder/${token.tokenId}`}
+            src={`/api/art-placeholder/${tokenId}`}
             width="200"
             height="275"
             className="row-start-1 col-start-1 bg-stone-900"
@@ -72,7 +60,6 @@ export const DisputableTokens = ({ address, lastDispute }: Props) => {
                   throw new Error("Not connected");
                 }
 
-                // TODO: finish this
                 const { signature } = await fetch("/api/dispute-signature", {
                   method: "POST",
                   headers: {
@@ -80,7 +67,7 @@ export const DisputableTokens = ({ address, lastDispute }: Props) => {
                   },
                   body: JSON.stringify({
                     address,
-                    tokenId: token.tokenId,
+                    tokenId,
                     lastDispute,
                   }),
                 }).then(
@@ -90,7 +77,7 @@ export const DisputableTokens = ({ address, lastDispute }: Props) => {
 
                 const tx = await writeAsync({
                   recklesslySetUnpreparedArgs: [
-                    BigNumber.from(token.tokenId),
+                    BigNumber.from(tokenId),
                     signature,
                   ],
                 });
@@ -103,7 +90,7 @@ export const DisputableTokens = ({ address, lastDispute }: Props) => {
                   render: (
                     <>
                       Your piece has fundamental changed.{" "}
-                      <Link href={`/art/${token.tokenId.toString()}`}>
+                      <Link href={`/art/${tokenId.toString()}`}>
                         <a
                           className="underline"
                           onClick={() => toast.dismiss()}
@@ -130,7 +117,7 @@ export const DisputableTokens = ({ address, lastDispute }: Props) => {
             <span className="text-white bg-amber-800 px-4 py-2">Dispute</span>
           </button>
           <span className="absolute bottom-full right-0 text-sm leading-relaxed">
-            {token.tokenId}/{maxSupply}
+            {tokenId}/{maxSupply}
           </span>
         </div>
       ))}
