@@ -17,13 +17,15 @@
     "deploy:mainnet": "source .env.mainnet && SHARED_SIGNER=0x182ED4348ddb8E258cEa8f4364b359C625161200 forge script script/Deploy.s.sol --rpc-url=$RPC_URL --private-key=$DEPLOYER_PRIVATE_KEY",
     "withdraw": "source .env.mainnet && cast send 0x0C60B40289Ff15fF6AfDfa668D1a743dc6e53cF3 \"withdrawAll(address)\" 0xc33E3331772E989B678571923f85568719EC3ab0 --rpc-url=$RPC_URL --private-key=$DEPLOYER_PRIVATE_KEY"
   },
-  "devDependencies": {
+  "dependencies": {
     "@ethersproject/abi": "^5.0.0",
-    "@ethersproject/bytes": "^5.0.0",
     "@ethersproject/providers": "5.5.0",
+    "ethers": "5.5.1"
+  },
+  "devDependencies": {
+    "@ethersproject/bytes": "^5.0.0",
     "@typechain/ethers-v5": "^10.2.0",
     "@types/node": "^18.11.18",
-    "ethers": "5.5.1",
     "prettier-plugin-solidity": "^1.0.0-beta.19",
     "solhint": "^3.3.7",
     "solhint-plugin-prettier": "^0.0.5",
